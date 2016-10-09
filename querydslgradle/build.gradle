@@ -1,0 +1,68 @@
+buildscript {
+	ext {
+		springBootVersion = '1.4.1.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'spring-boot'
+//apply plugin: 'idea'
+
+jar {
+	baseName = 'querydslgradle'
+	version = '0.0.1-SNAPSHOT'
+}
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+	mavenCentral()
+}
+
+//idea {
+//	module {
+//		sourceDirs += file('target/generated-sources')
+//	}
+//}
+
+
+dependencies {
+	compile('org.springframework.boot:spring-boot-starter-data-jpa')
+	compile('org.springframework.boot:spring-boot-starter-web')
+	compile "com.querydsl:querydsl-core:4.1.4"
+	compile ('com.querydsl:querydsl-jpa:4.1.4')
+	compile ('com.querydsl:querydsl-apt:4.1.4:jpa')
+	compile "com.h2database:h2"
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+compileJava {
+	options.compilerArgs << "-s"
+	options.compilerArgs << "$projectDir/target/generated-sources/java"
+
+	doFirst {
+		// make sure that directory exists
+		file(new File(projectDir, "/target/generated-sources/java")).mkdirs()
+	}
+}
+
+clean.doLast {
+	// clean-up directory when necessary
+	file(new File(projectDir, "/target/generated-sources")).deleteDir()
+}
+
+//sourceSets {
+//	main {
+//		java {
+//			srcDir "$projectDir/target/generated-sources/java"
+//		}
+//	}
+//
+//}

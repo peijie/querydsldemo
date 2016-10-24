@@ -84,17 +84,28 @@ public class QuerydslsqlApplication  implements CommandLineRunner{
 		QCompany company = QCompany.company;
         QProductDetail product = QProductDetail.productDetail;
 
-		SQLTemplates dialect = new MySQLTemplates();
-		Configuration configuration = new Configuration(dialect);
+		SQLTemplates templates = new MySQLTemplates();
+		Configuration configuration = new Configuration(templates);
 
 		SQLQueryFactory queryFactory = new SQLQueryFactory(configuration, dataSource);
 
-        List<Tuple> products = queryFactory
-                .select(product.productName, product.shortDescription, company.companyId, company.companyEmail)
-                .from(product)
-                .join(company)
-                .where(company.companyId.eq("company1"))
-                .fetch();
+		SQLQuery query = queryFactory.query()
+				.select(product.productName, product.shortDescription, company.companyId, company.companyEmail)
+				.from(product)
+				.join(company)
+				.where(company.companyId.eq("company1"));
+//		query.setUseLiterals(true);
+
+		List<Tuple> products = query.fetch();
+
+
+
+//        List<Tuple> products = queryFactory
+//                .select(product.productName, product.shortDescription, company.companyId, company.companyEmail)
+//                .from(product)
+//                .join(company)
+//                .where(company.companyId.eq("company1"))
+//                .fetch();
 
         for(Tuple name: products) {
             System.out.println(name);
